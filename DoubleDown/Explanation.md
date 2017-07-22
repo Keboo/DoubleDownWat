@@ -74,3 +74,5 @@ object internalValue = GetInternal();
 if (internalValue is T result)
 ```
 This addresses the problem by forcing the return value from `GetInternal()` into a reference type.
+
+It is a bit surprising that the compiler does not simply generate a variable that matches the return type of `GetInternal()` (or whatever type the expression returns). Admittedly this would mean either additional logic ot determine if it is a method call, or simply do it always and be wasteful if the value being evaluated were a local variable, field, etc.
