@@ -37,6 +37,14 @@ Let's follow the IL through for our case to see what is happening.
 `IL_0017` Cast the value on top of the stack to the generic T type and push it onto the stack.
 `IL_001c` Store the value on top of the stack in the `result` variable.
 
+Functionally this code is roughly equal to:
+```C#
+if (GetInternal() is T)
+{
+    result = (T)GetInternal();
+}
+```
+
 The issue is the unconstrained generic parameter coupled with the `is` operator.
 Let's examine what happens when we constrain T to be a class.
 
@@ -75,4 +83,4 @@ if (internalValue is T result)
 ```
 This addresses the problem by forcing the return value from `GetInternal()` into a reference type.
 
-It is a bit surprising that the compiler does not simply generate a variable that matches the return type of `GetInternal()` (or whatever type the expression returns). Admittedly this would mean either additional logic ot determine if it is a method call, or simply do it always and be wasteful if the value being evaluated were a local variable, field, etc.
+It is a bit surprising that the compiler does not simply generate a variable that matches the return type of `GetInternal()` (or whatever type the expression returns). Admittedly this would mean either additional logic to determine the return type of the expression (remember it could be anything not always jsut a simple method call), or simply always do it and be wasteful if the value being evaluated were a local variable, field, etc.
